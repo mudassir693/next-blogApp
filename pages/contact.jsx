@@ -6,9 +6,9 @@ function contact() {
 
     <div>
         <Header />
-        <span>
+        <div>
             contact
-        </span>
+        </div>
     </div>
   )
 }
