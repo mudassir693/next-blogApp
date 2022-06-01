@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans:wght@400;500;600&family=Rancho&display=swap');
+.header {
+    min-height: 62px;
+    /* background:pink; */
+}
+.span {
+    font-size: 18px;
+}
+.logoContainer {
+    /* background:white; */
+    width: fit-content;
+    font-family: 'Rancho', cursive;
+}
+
+
+.linkContainer {
+    font-size: 18px;
+}
