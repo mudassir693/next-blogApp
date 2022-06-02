@@ -1,0 +1,12 @@
+.imageStyling {
+    display: none;
+    width: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    object-fit: cover;
+    cursor: pointer;
+}
+.mainContainer:hover .articleTitle{
+    color: #DA0060;
+    width: fit-content;
+}

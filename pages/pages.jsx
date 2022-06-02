@@ -1,12 +1,16 @@
 import React from 'react'
+import Articles from '../components/Articles/Articles'
+import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
-import Page from '../components/Page/Page'
+import PageTop from '../components/PageTop/PageTop'
 
 function pages() {
   return (
-    <div className="w-100% ">
+    <div className="w-100% bg-[#061019]">
         <Header />
-        <Page />
+        <PageTop />
+        <Articles />
+        <Footer />
 
         <div>
             pages

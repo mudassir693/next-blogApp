@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchBar from '../SearchBar/SearchBar';
-import style from './Page.module.css'
+import style from './PageTop.module.css'
 
 function Page() {
   return (
@@ -15,8 +15,6 @@ function Page() {
               Hey there 👋 I'm <span className="font-medium"> Muhammad Mudassir Siddiqui </span> a full-stack remote web developer with <span className="font-medium"> 2+ years </span> of experience, and I'll help you become a web developer with bite-sized dev tips.
             </div>    
           </div>
-            {/* <SearchBar /> */}
-            {/* Page here */}
         </div>
     </div>
   );
