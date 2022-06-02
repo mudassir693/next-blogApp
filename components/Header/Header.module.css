@@ -2,9 +2,11 @@
 .header {
     min-height: 62px;
     /* background:pink; */
+    /* color: #da0060; */
 }
 .span {
     font-size: 18px;
+    /* color: #ffbc3d; */
 }
 .logoContainer {
     /* background:white; */
