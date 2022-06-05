@@ -1,12 +1,18 @@
 import Image from 'next/image'
 import React from 'react'
+import {useRouter} from 'next/router'
 
 
 import style from './ArticleTile.module.css'
 
 function ArticleTile({imgSrc,title}) {
+  const router = useRouter()
+
+  const route = ()=>{
+    router.push('/pages/1')
+  }
   return (
-    <div className={`${style.mainContainer} cursor-pointer`}>
+    <div onClick={route} className={`${style.mainContainer} cursor-pointer`}>
         <div className={`articleImage w-[100%] h-[220px] relative`}>
             <Image className={`${style.imageStyling} `} src={imgSrc} alt="learn Next.Js" layout='fill'  objectFit='cover' />
         </div>

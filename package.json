@@ -13,8 +13,11 @@
     "font-awesome": "^4.7.0",
     "next": "latest",
     "react": "18.1.0",
+    "react-code-blocks": "^0.0.9-0",
     "react-dom": "18.1.0",
-    "react-icons": "^4.4.0"
+    "react-icons": "^4.4.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-terminal-command": "^2.0.3"
   },
   "devDependencies": {
     "@types/node": "17.0.35",

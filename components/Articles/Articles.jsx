@@ -1,12 +1,14 @@
 import React from 'react'
 import ArticleTile from '../ArticleTile/ArticleTile'
 import style from './Articles.module.css'
-import NextTitleImage from '../../assets/next2.png'
-import ReactTitleImage from '../../assets/React.jpg'
-import VueTitleImage from '../../assets/Vue.jpg'
-import GQLTitleImage from '../../assets/GQLpng.png'
-import K8sTitleImage from '../../assets/k8s.png'
-import dockerTitleImage from '../../assets/docker.png'
+import NextTitleImage from '../../assets/next3.png'
+import ReactTitleImage from '../../assets/react2.webp'
+import VueTitleImage from '../../assets/vue2.webp'
+import GQLTitleImage from '../../assets/GQL2Banner.png'
+import K8sTitleImage from '../../assets/kubernetes2.jpg'
+import dockerTitleImage from '../../assets/docker2.webp'
+import NodeTitleImage from '../../assets/node2.jpg'
+
 
 
 function Articles() {
@@ -16,12 +18,13 @@ function Articles() {
             My Articles
         </div>
         <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <ArticleTile title="Learn Node.JS" imgSrc={NodeTitleImage} />
             <ArticleTile title="Learn Next.JS" imgSrc={NextTitleImage} />
             <ArticleTile title="Master Your React.JS" imgSrc={ReactTitleImage} />
             <ArticleTile title="Learn Vue.JS" imgSrc={VueTitleImage} />
             <ArticleTile title="GraphQL" imgSrc={GQLTitleImage} />
-            <ArticleTile title="Kubernetes" imgSrc={dockerTitleImage} />
-            <ArticleTile title="Docker" imgSrc={K8sTitleImage} />
+            <ArticleTile title="Docker" imgSrc={dockerTitleImage} />
+            <ArticleTile title="Kubernetes" imgSrc={K8sTitleImage} />
         </div>
     </div>
   )

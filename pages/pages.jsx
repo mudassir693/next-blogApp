@@ -3,6 +3,7 @@ import Articles from '../components/Articles/Articles'
 import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
 import PageTop from '../components/PageTop/PageTop'
+import Technologies from '../components/Technologies/Technologies'
 
 function pages() {
   return (
@@ -10,6 +11,7 @@ function pages() {
         <Header />
         <PageTop />
         <Articles />
+        <Technologies />
         <Footer />
 
         <div>
