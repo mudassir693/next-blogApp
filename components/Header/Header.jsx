@@ -5,9 +5,13 @@ import {BiCodeCurly} from 'react-icons/bi'
 import {FaAngleRight} from 'react-icons/fa'
 import {FaAngleLeft} from 'react-icons/fa'
 import {CgFormatSlash} from 'react-icons/cg'
+import axios from 'axios'
+
+
 
 
 function Header() {
+    // console.log(props)
     const router = useRouter()
     const handleContact = (route)=>{
         router.push(route)
@@ -36,5 +40,7 @@ function Header() {
     </div>
   )
 }
+
+
 
 export default Header

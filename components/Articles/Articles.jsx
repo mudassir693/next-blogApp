@@ -8,10 +8,10 @@ import GQLTitleImage from '../../assets/GQL2Banner.png'
 import K8sTitleImage from '../../assets/kubernetes2.jpg'
 import dockerTitleImage from '../../assets/docker2.webp'
 import NodeTitleImage from '../../assets/node2.jpg'
+import axios from 'axios'
 
-
-
-function Articles() {
+function Articles({articles}) {
+  // console.log(test)
   return (
     <div className="max-w-4xl mx-auto my-5 w-[90%] lg:w-[100%]">
         <div className="articleHeader text-2xl font-semibold text-white mt-5">
