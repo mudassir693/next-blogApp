@@ -22,7 +22,7 @@ export const getServerSideProps = async()=>{
   `
   const resp = await request('http://localhost:5000/graphql',query)
 
-  console.log(resp.getBlogById)
+  // console.log(resp.getBlogById)
 
   return {
     props:{
@@ -32,7 +32,7 @@ export const getServerSideProps = async()=>{
 }
 
 function eachPage({pageData}) {
-  console.log('hello Yaro: ',pageData);
+  // console.log('hello Yaro: ',pageData);
   const router = useRouter()
   const {eachPage} = router.query
 
