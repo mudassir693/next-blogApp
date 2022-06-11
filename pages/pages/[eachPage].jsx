@@ -5,10 +5,13 @@ import Header from '../../components/Header/Header';
 import { useRouter } from 'next/router'
 import { request, gql } from 'graphql-request'
 
-export const getServerSideProps = async()=>{
+export const getServerSideProps = async(context)=>{
+
+  // console.log('context.params: ',context.params.eachPage);
+  const targetId = context.params.eachPage
   const query = gql`
-  query {
-    getBlogById(id:"629fa48475533a917c4bf23d"){
+  query($_id:String) {
+    getBlogById(id:$_id){
       _id
       TitleImage
       Title
@@ -17,10 +20,11 @@ export const getServerSideProps = async()=>{
       Code
       Peragraphs
       FinalLine
+      Views
     }
   }
   `
-  const resp = await request('http://localhost:5000/graphql',query)
+  const resp = await request('http://localhost:5000/graphql',query,{_id:targetId})
 
   // console.log(resp.getBlogById)
 

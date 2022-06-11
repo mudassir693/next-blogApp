@@ -19,6 +19,8 @@ export const getStaticProps = async(context) => {
         Code
         Peragraphs
         FinalLine
+        Views,
+        Likes
       }
     } 
   `
@@ -30,18 +32,18 @@ export const getStaticProps = async(context) => {
   return {
     props: {
       // test:JSON.parse(JSON.stringify(test.data.results))
-      test:resp.getAllBlogs
+      blogs:resp.getAllBlogs
     } // will be passed to the page component as props
   }
 }
 
-function pages({test}) {
-  console.log('i love you jani',test)
+function pages({blogs}) {
+  console.log('i love you jani',blogs)
   return (
     <div className="w-100% bg-[#061019]">
         <Header />
         <PageTop />
-        <Articles articles={test} />
+        <Articles articles={blogs} />
         <Technologies />
         <Footer />
 

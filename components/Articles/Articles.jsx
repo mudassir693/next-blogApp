@@ -9,15 +9,23 @@ import K8sTitleImage from '../../assets/kubernetes2.jpg'
 import dockerTitleImage from '../../assets/docker2.webp'
 import NodeTitleImage from '../../assets/node2.jpg'
 import axios from 'axios'
+import Modal from '../Modal/Modal'
 
 function Articles({articles}) {
   // console.log(test)
   return (
     <div className="max-w-4xl mx-auto my-5 w-[90%] lg:w-[100%]">
+      <Modal />
         <div className="articleHeader text-2xl font-semibold text-white mt-5">
             My Articles
         </div>
         <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {articles.map(eachArticle=>(
+            <ArticleTile article={eachArticle} imgSrc={NodeTitleImage} />
+            ))  
+          }
+          </div>
+        {/* <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">
             <ArticleTile title="Learn Node.JS" imgSrc={NodeTitleImage} />
             <ArticleTile title="Learn Next.JS" imgSrc={NextTitleImage} />
             <ArticleTile title="Master Your React.JS" imgSrc={ReactTitleImage} />
@@ -25,7 +33,7 @@ function Articles({articles}) {
             <ArticleTile title="GraphQL" imgSrc={GQLTitleImage} />
             <ArticleTile title="Docker" imgSrc={dockerTitleImage} />
             <ArticleTile title="Kubernetes" imgSrc={K8sTitleImage} />
-        </div>
+        </div> */}
     </div>
   )
 }
