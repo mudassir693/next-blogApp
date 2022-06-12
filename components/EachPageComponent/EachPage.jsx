@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useContext} from 'react'
 import Image from 'next/image'
 import NextBannerImage from '../../assets/next3.png'
 import { CopyBlock, dracula } from "react-code-blocks";
@@ -6,33 +6,61 @@ import ReactTerminalCommand from 'react-terminal-command'
 import {BsSuitHeartFill} from 'react-icons/bs'
 import {BsSuitHeart} from 'react-icons/bs'
 import {gql,request} from 'graphql-request'
-
+import Modal from '../Modal/Modal';
+import {context} from '../../projectContext/ProjectContext'
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function EachPage({pageData}) {
 
-    const [blogLiked,setBlogLiked] = useState(false)
+    const {modal,login,toggleModal} = useContext(context)
+
+    const [blogLiked,setBlogLiked] = useState(pageData.LikeBy.includes(login._id)?true:false) // masla
 
 
     const handleLike =async ()=>{
-        setBlogLiked(!blogLiked)
         await getLikes()
     }
     const getLikes = async()=>{
-        const mutation = gql`
-            mutation($id:String) {
-            addLike(id:$id){
-              Title
-            }
-          }
-        `
 
-        const resp = await request(`http://localhost:5000/graphql`,mutation,{id:pageData._id})
-        console.log(resp)
+        if(login.Name && blogLiked==false){
+            console.log('login: ',login)
+            const mutation = gql`
+                mutation($id:String,$readerId:String) {
+                addLike(id:$id,readerId:$readerId){
+                  Title,
+                  LikeBy
+                }
+              }
+            `
+    
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:pageData._id,readerId:login._id})
+            console.log('is everything goes well: ',resp)
+            setBlogLiked(true)
+
+        }
+        else if(login.Name && blogLiked){
+            console.log('login2: ',login)
+            const mutation = gql`
+                mutation($id:String,$readerId:String) {
+                removeLike(id:$id,readerId:$readerId){
+                  Title,
+                  LikeBy
+                }
+              }
+            `
+    
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:pageData._id,readerId:login._id})
+            console.log('is everything goes well2: ',resp)
+            setBlogLiked(false)
+        }
+        else{
+            toggleModal()
+        }
     }
   return (
     <div className="bg-[#061019] py-10">
+        {modal && <Modal />}
         <div className="max-w-4xl mx-auto text-white my-5">
             <div className="profileImageContainer h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto ">
                 <Image className="rounded-[2rem]" src={NextBannerImage} objectFit="cover" layout='fill' />
@@ -92,7 +120,8 @@ function EachPage({pageData}) {
                 </div>
 
                 <div onClick={handleLike} className="my-10 w-fit text-center likeSection text-white font-bold text-xl flex justify-center cursor-pointer">
-                   <span className='mx-2'> Heart it if You like.</span>{blogLiked? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />}
+                <span className='mx-2'> Heart it if You like.</span> {(pageData.LikeBy.includes(login._id)||blogLiked)&&<BsSuitHeartFill className='text-2xl text-[#DA0060]'  />}{!blogLiked && <BsSuitHeart className='text-2xl text-[#DA0060]'  />}
+                   {/* {blogLiked? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />} */}
                 </div>
             </div>
         </div>

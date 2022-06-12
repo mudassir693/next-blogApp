@@ -21,6 +21,8 @@ export const getServerSideProps = async(context)=>{
       Peragraphs
       FinalLine
       Views
+      Likes
+      LikeBy
     }
   }
   `

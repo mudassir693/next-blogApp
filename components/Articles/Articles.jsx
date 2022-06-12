@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useContext} from 'react'
 import ArticleTile from '../ArticleTile/ArticleTile'
 import style from './Articles.module.css'
 import NextTitleImage from '../../assets/next3.png'
@@ -10,12 +10,13 @@ import dockerTitleImage from '../../assets/docker2.webp'
 import NodeTitleImage from '../../assets/node2.jpg'
 import axios from 'axios'
 import Modal from '../Modal/Modal'
-
+import {context} from '../../projectContext/ProjectContext'
 function Articles({articles}) {
   // console.log(test)
+  const {modal} = useContext(context)
   return (
     <div className="max-w-4xl mx-auto my-5 w-[90%] lg:w-[100%]">
-      <Modal />
+      {modal && <Modal />}
         <div className="articleHeader text-2xl font-semibold text-white mt-5">
             My Articles
         </div>
