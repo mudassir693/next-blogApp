@@ -13,10 +13,62 @@ import {context} from '../../projectContext/ProjectContext'
 
 function EachPage({pageData}) {
 
+
+
     const {modal,login,toggleModal} = useContext(context)
+
+    const [blog,setBlog]= useState({
+        _id:'',
+        TitleImage:'',
+        Title:'',
+        Introduction:'',
+        TerminalCommands:[],
+        Code:[],
+        Peragraphs:[],
+        FinalLine:'',
+        Views:'',
+        Likes:'',
+        LikeBy:''
+    })
 
     const [blogLiked,setBlogLiked] = useState(pageData.LikeBy.includes(login._id)?true:false) // masla
 
+    useEffect(()=>{
+        getPageData()
+        console.log('toggle: ',blogLiked)
+    },[blogLiked])
+
+    const getPageData = async()=>{
+
+        const query = gql`
+        query($_id:String) {
+          getBlogById(id:$_id){
+            _id
+            TitleImage
+            Title
+            Introduction
+            TerminalCommands
+            Code
+            Peragraphs
+            FinalLine
+            Views
+            Likes
+            LikeBy
+          }
+        }
+        `
+        const resp = await request('http://localhost:5000/graphql',query,{_id:pageData._id})
+
+        console.log('this is from useEffect: ',resp.getBlogById);
+        setBlog(resp?.getBlogById)
+        setBlogLiked(resp?.getBlogById.LikeBy.includes(login._id)?true:false)
+        console.log('this time it blog is : ',resp?.getBlogById.LikeBy.includes(login._id)?true:false)
+        console.log('user: ',login._id)
+        return () => {
+            console.log("This will be logged on unmount");
+        }
+
+    }
 
     const handleLike =async ()=>{
         await getLikes()
@@ -66,17 +118,17 @@ function EachPage({pageData}) {
                 <Image className="rounded-[2rem]" src={NextBannerImage} objectFit="cover" layout='fill' />
             </div>
             <div className="text-4xl font-semibold text-center my-10">
-            {pageData?.Title}
+            {blog?.Title}
             </div>
             <div className="text-2xl w-[90%] md:w-[80%] mx-auto font-thin my-10">
-                {pageData?.Introduction}
+                {blog?.Introduction}
             </div>
-            {pageData?.TerminalCommands.map(eachCmd=>(
+            {blog?.TerminalCommands.length>0 &&  blog?.TerminalCommands.map(eachCmd=>(
                     <div className="w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
                         <ReactTerminalCommand command={eachCmd} />
                     </div>
                 ))}
-            {pageData?.Code.map(eachCode=>(
+            {blog?.Code.length>0 && blog?.Code.map(eachCode=>(
             <div className="codeBlock w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
                 <CopyBlock
                     // text={ `
@@ -96,7 +148,7 @@ function EachPage({pageData}) {
                 />
             </div>))}
             <div className="descContainer w-[90%] md:w-[90%] mx-auto">
-                {pageData?.Peragraphs.map(eachPera=>(
+                {blog?.Peragraphs.length>0 && blog?.Peragraphs.map(eachPera=>(
                 <div className="desc text-white text-xl my-5">
                     {eachPera}
                 </div>))}
@@ -116,11 +168,11 @@ function EachPage({pageData}) {
                     codeBlock
                 /> */}
                 <div className="desc text-white text-xl my-5">
-                    {pageData.FinalLine}
+                    {blog?.FinalLine}
                 </div>
 
                 <div onClick={handleLike} className="my-10 w-fit text-center likeSection text-white font-bold text-xl flex justify-center cursor-pointer">
-                <span className='mx-2'> Heart it if You like.</span> {(pageData.LikeBy.includes(login._id)||blogLiked)&&<BsSuitHeartFill className='text-2xl text-[#DA0060]'  />}{!blogLiked && <BsSuitHeart className='text-2xl text-[#DA0060]'  />}
+                <span className='mx-2'> Heart it if You like.</span> {(blog?.LikeBy.includes(login._id)) ? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />}
                    {/* {blogLiked? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />} */}
                 </div>
             </div>
