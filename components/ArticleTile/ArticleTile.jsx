@@ -16,6 +16,7 @@ function ArticleTile({imgSrc,article}) {
     <div onClick={route} className={`${style.mainContainer} cursor-pointer`}>
         <div className={`articleImage w-[100%] h-[220px] relative`}>
             <Image className={`${style.imageStyling} `} src={imgSrc} alt="learn Next.Js" layout='fill'  objectFit='cover' />
+            <div className={`${style.tileLayout} rounded-[20px]`}></div>
         </div>
         <div className={`${style.articleTitle} text-white my-2 text-2xl font-medium` }>
             {article.Title}

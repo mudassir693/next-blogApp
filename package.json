@@ -11,6 +11,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "axios": "^0.27.2",
+    "firebase": "^4.8.0",
     "font-awesome": "^4.7.0",
     "graphql": "^16.5.0",
     "graphql-request": "^4.3.0",
@@ -19,6 +20,8 @@
     "react": "18.1.0",
     "react-code-blocks": "^0.0.9-0",
     "react-dom": "18.1.0",
+    "react-firebase-hooks": "^5.0.3",
+    "react-firebaseui": "^6.0.0",
     "react-icons": "^4.4.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-terminal-command": "^2.0.3"

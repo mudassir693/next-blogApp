@@ -3,9 +3,10 @@ import React from 'react'
 import {SiLinkedin} from 'react-icons/si'
 import {BsGithub} from 'react-icons/bs'
 import {FaTwitterSquare} from 'react-icons/fa'
-
+import MyDP from '../../assets/myLinkedInDP.jpeg'
 
 import style from './Footer.module.css'
+import Image from 'next/image'
 function Footer() {
   return (
     <div className="w-[100%] bg-[#061019] py-5">
@@ -14,8 +15,8 @@ function Footer() {
                 <div className="footerTop text-white text-3xl font-bond my-3">
                 Progress Regularly
                 </div>
-                <div className="footerDesc text-gray-400 text-md">
-                Made with ❤️ by <span className="font-semibold">Muhammd Mudassir</span> .
+                <div className="footerDesc  flex justify-center items-center">
+                <span className='text-gray-400 text-md'> Made with ❤️ by </span> <span className="text-gray-400 font-semibold mx-2">Muhammd Mudassir</span>.
                 </div>
             </div>
             <div className="footerLinks flex justify-center items-center my-4">

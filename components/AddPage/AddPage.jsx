@@ -5,6 +5,16 @@ import {HiOutlinePlusCircle} from 'react-icons/hi'
 import { CopyBlock, dracula } from "react-code-blocks";
 import ReactTerminalCommand from 'react-terminal-command'
 import {gql,request} from 'graphql-request'
+import firebase from "../../firebase-config"
+
+const db = firebase.storage();
+import Image from 'next/image';
+import { useCollection } from "react-firebase-hooks/firestore";
+// import { useDocument } from "react-firebase-hooks/firestore";
+// import firebase from "../firebase/clientApp";
+// 
+
+// const db = firebase.firestore();
 
 function AddPage() {
     const [title,setTitle] = useState('')
@@ -16,6 +26,9 @@ function AddPage() {
     const [peras,setPeras] = useState([])
     const [pera,setPera] = useState('')
     const [endline,setEndline] = useState('')
+
+    const [image,setImage] = useState('')
+    const [imageUrl,setImageUrl] = useState('')
 
     const handleFeilds = (e,arg)=>{
         if(arg=='title'){
@@ -72,6 +85,49 @@ function AddPage() {
         const resp = await request('http://localhost:5000/graphql',query,{title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
         console.log(resp)
     }
+
+    // const handleFireBaseUpload = e => {
+    //     // e.preventDefault()
+    //       console.log('start of upload')
+    //   // async magic goes here...
+
+    //   const uploadTask = storage.ref(`/images/${imageAsFile.name}`).put(imageAsFile)
+      
+    //   }
+
+      const handleImageAsFile = async(e) => {
+        console.log('yess')
+        const image = e.target.files[0]
+        setImage(image)
+        console.log(e.target.files[0]);
+        // handleFireBaseUpload()
+
+        console.log('start of upload')
+        // async magic goes here...
+  
+        const uploadTask = db.ref(`/images/${e.target.files[0].name}`).put(e.target.files[0])
+
+        // const imageResp =  await db.collection("images").doc(`images-${e.target.files[0].name}`).set(JSON.parse(JSON.stringify({id:image.name,file:image})));
+
+        // console.log('checkmark: ',imageResp);
+
+        uploadTask.on('state_changed', 
+            (snapShot) => {
+            //takes a snap shot of the process as it is happening
+            console.log('snapshot: ',snapShot)
+            }, (err) => {
+            //catches the errors
+            console.log('error: ',err.message_)
+            }, () => {
+            // gets the functions from storage refences the image storage in firebase by the children
+            // gets the download url then sets the image from firebase as the value for the imgUrl key:
+            db.ref('images').child(image.name).getDownloadURL()
+            .then(fireBaseUrl => {
+                console.log('here is url: ', fireBaseUrl);
+                setImageUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
+       })
+    })
+    }
   return (
     <div className="w-[100%] mx-auto bg-[#061019] text-white py-10">
         <div className="max-w-4xl mx-auto  my-5">
@@ -79,6 +135,15 @@ function AddPage() {
                 AddPage
             </div>
             <div className="formContainer my-5 w-[90%] md:w-[80%] mx-auto">
+
+            <input 
+                type="file"
+                onChange={handleImageAsFile}
+            />
+
+            {/* {image && <div className="imageContainerAddForm h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto">
+                <Image src={image} alt='Banner Image'  objectFit="cover" layout='fill'/>
+            </div>} */}
 
             <div className="eachFeildContainer my-10">
                     <div className="text-white text-xl font-semibold">
