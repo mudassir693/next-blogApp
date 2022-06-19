@@ -15,16 +15,17 @@ function Modal() {
         console.log('hereisData: ',formData)
 
         const addMutation = gql`
-            mutation($name:String,$email:String){
-                addReader(Name:$name,Email:$email){
+            mutation($name:String,$email:String,$admin:Boolean){
+                addReader(Name:$name,Email:$email,Admin:$admin){
                     _id
                     Name
                     Email
+                    Admin
                     createdAt
                   }
             }
         `
-        const resp = await request('http://localhost:5000/graphql',addMutation,{name:formData.Name,email:formData.Email})
+        const resp = await request('http://localhost:5000/graphql',addMutation,{name:formData.Name,email:formData.Email,admin:false})
         console.log(resp.addReader)
         setLogin(resp.addReader)
         toggleModal()

@@ -114,9 +114,9 @@ function EachPage({pageData}) {
     <div className="bg-[#061019] py-10">
         {modal && <Modal />}
         <div className="max-w-4xl mx-auto text-white my-5">
-            <div className="profileImageContainer h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto ">
-                <Image className="rounded-[2rem]" src={NextBannerImage} objectFit="cover" layout='fill' />
-            </div>
+            {blog.TitleImage && <div className="profileImageContainer h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto ">
+                <Image className="rounded-[2rem]" src={blog?.TitleImage=="Image_2"?NextBannerImage:blog?.TitleImage} objectFit="cover" layout='fill' />
+            </div>}
             <div className="text-4xl font-semibold text-center my-10">
             {blog?.Title}
             </div>

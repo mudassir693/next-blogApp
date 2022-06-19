@@ -1,4 +1,4 @@
-import React,{useContext} from 'react'
+import React,{useContext,useEffect,useState} from 'react'
 import ArticleTile from '../ArticleTile/ArticleTile'
 import style from './Articles.module.css'
 import NextTitleImage from '../../assets/next3.png'
@@ -11,9 +11,48 @@ import NodeTitleImage from '../../assets/node2.jpg'
 import axios from 'axios'
 import Modal from '../Modal/Modal'
 import {context} from '../../projectContext/ProjectContext'
+import {gql,request} from 'graphql-request'
+
+
 function Articles({articles}) {
   // console.log(test)
   const {modal} = useContext(context)
+  const [blogList,setBlogList] = useState([])
+  const [toggler,setToggler] = useState(true)
+  
+  useEffect(()=>{
+    // console.log('toggler useEffect');
+    getArticles()
+  },[toggler])
+
+  const getArticles = async()=>{
+    const query = gql`
+    query {
+      getAllBlogs {
+        _id
+        TitleImage
+        Title
+        Introduction
+        TerminalCommands
+        Code
+        Peragraphs
+        FinalLine
+        Views,
+        Likes
+      }
+    } 
+  `
+  
+    const resp =await request('http://localhost:5000/graphql',query)
+    setBlogList(resp.getAllBlogs)
+
+    console.log('get articles from useEffect: ',resp);
+
+    return () => {
+      console.log("This will be logged on unmount");
+  }
+  }
+
   return (
     <div className="max-w-4xl mx-auto my-5 w-[90%] lg:w-[100%]">
       {modal && <Modal />}
@@ -21,8 +60,8 @@ function Articles({articles}) {
             My Articles
         </div>
         <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {articles.map(eachArticle=>(
-            <ArticleTile article={eachArticle} imgSrc={NodeTitleImage} />
+        {blogList.map(eachArticle=>(
+            <ArticleTile toggler={toggler} setToggler={setToggler} article={eachArticle} imgSrc={NodeTitleImage} />
             ))  
           }
           </div>

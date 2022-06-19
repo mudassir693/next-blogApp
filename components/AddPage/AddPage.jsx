@@ -69,8 +69,8 @@ function AddPage() {
         console.log(peras)
 
         const query = gql`
-            mutation($title: String, $intro: String, $cmds:[String], $code:[String], $pera:[String], $endline:String) {
-                AddBlog(TitleImage:"Image_2",Title:$title, Introduction:$intro ,TerminalCommands:$cmds ,Code:$code,Peragraphs:$pera,FinalLine:$endline){
+            mutation($titleImg: String,$title: String, $intro: String, $cmds:[String], $code:[String], $pera:[String], $endline:String) {
+                AddBlog(TitleImage:$titleImg,Title:$title, Introduction:$intro ,TerminalCommands:$cmds ,Code:$code,Peragraphs:$pera,FinalLine:$endline){
                 TitleImage
                 Title
                 Introduction
@@ -82,7 +82,7 @@ function AddPage() {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',query,{title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
+        const resp = await request('http://localhost:5000/graphql',query,{titleImg:imageUrl,title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
         console.log(resp)
     }
 
@@ -124,7 +124,7 @@ function AddPage() {
             db.ref('images').child(image.name).getDownloadURL()
             .then(fireBaseUrl => {
                 console.log('here is url: ', fireBaseUrl);
-                setImageUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
+                setImageUrl(fireBaseUrl)
        })
     })
     }
@@ -141,9 +141,9 @@ function AddPage() {
                 onChange={handleImageAsFile}
             />
 
-            {/* {image && <div className="imageContainerAddForm h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto">
-                <Image src={image} alt='Banner Image'  objectFit="cover" layout='fill'/>
-            </div>} */}
+            {imageUrl && <div className="imageContainerAddForm my-3 h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto">
+                <Image className='rounded-lg' src={imageUrl} alt='Banner Image'  objectFit="cover" layout='fill'/>
+            </div>}
 
             <div className="eachFeildContainer my-10">
                     <div className="text-white text-xl font-semibold">

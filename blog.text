@@ -1,0 +1,159 @@
+GraphQL
+
+Hey There This is Muhammad Mudassir and today I am here to talk about GraphQL with Apollo server, so grab your snack and lets get started.
+
+npm i apollo-server-express
+
+npm i express @graphql-tools/load-files @graphql-tools/merge
+
+
+
+// server.js .
+
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./GraphQL/typeDefs/index');
+const resolvers = require('./GraphQL/resolvers/index');
+
+// initialize app
+const app = express()
+
+// create apollo server
+const server = new ApolloServer(
+    { typeDefs, resolvers}
+)
+
+server.applyMiddleware({app})
+
+// server running running on port 5000;
+app.listen(5000,()=>{
+    console.log(`server is running`)
+})
+
+
+
+// index.js graphQL/resolver/index.js
+
+const { mergeResolvers  } = require('@graphql-tools/merge')
+const blogResolver = require('./blogResolver')
+const readerResolver = require('./readerResolver')
+const { loadFilesSync } = require("@graphql-tools/load-files");
+
+const path = require("path");
+
+const resolverFiles = loadFilesSync(path.join(__dirname, "resolvers"));
+
+console.log('hello hello: ',resolverFiles)
+
+
+
+const resolvers = [readerResolver,blogResolver]
+
+module.exports = mergeResolvers(resolvers)
+
+
+
+// blogResolver
+
+const Blog = [Array of blog Objects/typeDefs]
+
+const resolver = {
+    Query: {
+        getAllBlogs:async()=>{
+            const resp = Blog
+
+            return resp
+        },
+        getBlogById: (parent,args)=>{
+
+            const resp =  Blog.find(eachObj => eachObj.Id==args.Id)
+            return resp
+        }
+    },
+    Mutation: {
+        AddBlog: (parent,args)=>{
+            console.log(args)
+            const newBlog =  Blog.push(args)
+            return args
+        },
+        deleteBlog: (parent,args)=>{
+            try {
+                const resp = Blog.find(eachObj=>eachObj.id !== args.id)
+                return resp
+            } catch (error) {
+                return error
+            }
+        }
+    }
+}
+
+module.exports = resolver
+
+
+// index.js graphQL/typeDefs/index.js
+const { mergeTypeDefs } = require('@graphql-tools/merge')
+const blogDefs = require('./blogtypeDef')
+const readerDefs = require('./readertypeDef')
+
+
+const types = [readerDefs,blogDefs]
+
+module.exports = mergeTypeDefs(types)
+
+
+// blogtypeDef.js /graphQL/typeDefs/blogtypeDef.js
+
+const {gql} = require('apollo-server-express')
+
+const typeDefs = gql`
+    type Blog {
+        _id:String!,
+        TitleImage: String!,
+        Title: String!,
+        Introduction: String,
+        TerminalCommands: [String]!,
+        Code: [String]!,
+        Peragraphs:[String]!,
+        FinalLine: String,
+        Views: Int,
+        Likes:Int,
+        LikeBy:[String]
+        createdAt: String,
+    },
+
+    #Query   
+    type Query {
+        getAllBlogs:[Blog!]!
+        getBlogById(id:String): Blog!
+    },
+
+    type Mutation {
+       
+        AddBlog(TitleImage: String, Title: String, Introduction: String, TerminalCommands: [String],Code: [String],Peragraphs:[String],FinalLine: String): Blog!
+        deleteBlog(id:String):[Blog!]
+    }
+
+
+`
+
+module.exports = typeDefs
+
+
+
+
+In the first place just install the packages as I did. "express" is basically used for creating a basic node.Js server. "apollo-server-express" is used to create GraphQL server in your node.Js application. in line9. we simply initialize the node.Js application and in line19. we expose it on port '5000'. if your port 5000 is busy you can run it on another port free the port by using the command "npx kill-port 5000" in line.12 create a graphQL server and then wrap "app" in it as I did in line.16
+
+
+Now create a folder called graphQL and then resolvers, then create an index.js file (for best practice) the main purpose of this index.js file is to import all the resolvers (either one or more than one) and export them from a single file this step is necessary when you have more than one resolvers feel free to past this index.js file as it is. now create a file in the same directory called it anything in my case it is blogResolver.js. resolvers are basically used to create a function or if you are using any database then most probably you might contact your database from the same file. The name of the function is declared in typeDef.js where every resolver file is divided into two sections Mutation and Query. Query it used to Get data where Mutation is used to Post, Put and Delete data. Every mutation function has two args first one is the parent and the second one is args. args is an object that contains data that you send.
+
+
+create another folder in graphQL/typeDefs/index.js create index.js. This index.js is used to merge all the typeDefs that you have in a folder again this step is necessary if you have more than one typeDefs.
+
+
+Finally, create a blogtypeDef.js here in this file you can follow the same syntax as I did. Define your object as I did Blog. create a mutation and query section and make sure that you follow the same syntax.
+
+
+Test everything by running a start script. and that's it. if you face any difficulty you can ask me through github or LinkedIn.
+
+
+Thanks for reading this if you have something to share with me connect me with LinkedIn. 
