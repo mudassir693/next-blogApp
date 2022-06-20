@@ -6,6 +6,7 @@ import { CopyBlock, dracula } from "react-code-blocks";
 import ReactTerminalCommand from 'react-terminal-command'
 import {gql,request} from 'graphql-request'
 import firebase from "../../firebase-config"
+import uri from '../../axios/axios'
 
 const db = firebase.storage();
 import Image from 'next/image';
@@ -82,7 +83,7 @@ function AddPage() {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',query,{titleImg:imageUrl,title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{titleImg:imageUrl,title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
         console.log(resp)
     }
 

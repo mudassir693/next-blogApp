@@ -25,7 +25,7 @@ export const getStaticProps = async(context) => {
     } 
   `
   
-    const resp =await request('http://localhost:5000/graphql',query)
+    const resp =await request('https://progress-regularly.herokuapp.com/graphql',query)
 
     console.log('resp mudassir',resp);
 
