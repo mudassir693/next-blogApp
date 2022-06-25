@@ -5,39 +5,39 @@ import Header from '../../components/Header/Header';
 import { useRouter } from 'next/router'
 import { request, gql } from 'graphql-request'
 
-export const getServerSideProps = async(context)=>{
+// export const getStaticProps = async(context)=>{
 
-  // console.log('context.params: ',context.params.eachPage);
-  const targetId = context.params.eachPage
-  const query = gql`
-  query($_id:String) {
-    getBlogById(id:$_id){
-      _id
-      TitleImage
-      Title
-      Introduction
-      TerminalCommands
-      Code
-      Peragraphs
-      FinalLine
-      Views
-      Likes
-      LikeBy
-    }
-  }
-  `
-  const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:targetId})
+//   // console.log('context.params: ',context.params.eachPage);
+//   const targetId = context.params.eachPage
+//   const query = gql`
+//   query($_id:String) {
+//     getBlogById(id:$_id){
+//       _id
+//       TitleImage
+//       Title
+//       Introduction
+//       TerminalCommands
+//       Code
+//       Peragraphs
+//       FinalLine
+//       Views
+//       Likes
+//       LikeBy
+//     }
+//   }
+//   `
+//   const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:targetId})
 
-  // console.log(resp.getBlogById)
+//   // console.log(resp.getBlogById)
 
-  return {
-    props:{
-      pageData:resp.getBlogById
-    }
-  }
-}
+//   return {
+//     props:{
+//       pageData:resp.getBlogById
+//     }
+//   }
+// }
 
-function eachPage({pageData}) {
+function eachPage(prop) {
   // console.log('hello Yaro: ',pageData);
   const router = useRouter()
   const {eachPage} = router.query
@@ -46,7 +46,7 @@ function eachPage({pageData}) {
   return (
     <div>
       <Header />
-      <EachPage pageData={pageData} />
+      <EachPage  />
       <Footer />
     </div>
   );

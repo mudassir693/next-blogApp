@@ -8,10 +8,16 @@ import {BsSuitHeart} from 'react-icons/bs'
 import {gql,request} from 'graphql-request'
 import Modal from '../Modal/Modal';
 import {context} from '../../projectContext/ProjectContext'
+import {useRouter} from 'next/router'
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function EachPage({pageData}) {
+
+    const router = useRouter()
+    const { eachPage } = router.query
+
+    console.log('is it fie: ', eachPage)
 
 
 
@@ -28,10 +34,10 @@ function EachPage({pageData}) {
         FinalLine:'',
         Views:'',
         Likes:'',
-        LikeBy:''
+        LikeBy:[]
     })
 
-    const [blogLiked,setBlogLiked] = useState(pageData.LikeBy.includes(login._id)?true:false) // masla
+    const [blogLiked,setBlogLiked] = useState(blog.LikeBy.includes(login._id)?true:false) // masla
 
     useEffect(()=>{
         getPageData()
@@ -57,7 +63,7 @@ function EachPage({pageData}) {
           }
         }
         `
-        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:pageData._id})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:eachPage})
 
         console.log('this is from useEffect: ',resp.getBlogById);
         setBlog(resp?.getBlogById)
@@ -86,7 +92,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:pageData._id,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage ,readerId:login._id})
             console.log('is everything goes well: ',resp)
             setBlogLiked(true)
 
@@ -102,7 +108,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:pageData._id,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage,readerId:login._id})
             console.log('is everything goes well2: ',resp)
             setBlogLiked(false)
         }
@@ -115,7 +121,7 @@ function EachPage({pageData}) {
         {modal && <Modal />}
         <div className="max-w-4xl mx-auto text-white my-5">
             {blog.TitleImage && <div className="profileImageContainer h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto ">
-                <Image className="rounded-[2rem]" src={blog?.TitleImage=="Image_2"?NextBannerImage:blog?.TitleImage} objectFit="cover" layout='fill' />
+                <Image className="rounded-[2rem]" src={blog?.TitleImage} objectFit="cover" layout='fill' />
             </div>}
             <div className="text-4xl font-semibold text-center my-10">
             {blog?.Title}

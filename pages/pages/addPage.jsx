@@ -3,7 +3,7 @@ import AddPage from '../../components/AddPage/AddPage'
 import Footer from '../../components/Footer/Footer'
 import Header from '../../components/Header/Header'
 
-function addPage() {
+function addPage(props) {
   return (
     <div>
         <Header />

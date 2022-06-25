@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Articles from '../components/Articles/Articles'
 import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
@@ -7,8 +7,21 @@ import Technologies from '../components/Technologies/Technologies'
 import axios from 'axios'
 import { request, gql } from 'graphql-request'
 
-export const getStaticProps = async(context) => {
-  const query = gql`
+
+function pages(prop) {
+  
+  const [blogs,setBlogs] = useState()
+  
+  console.log('i love you jani',blogs)
+  useEffect(()=>{
+    getBlogsFn()
+    return ()=>{
+      true
+    }
+  },[])
+
+  const getBlogsFn =async ()=>{
+    const query = gql`
     query {
       getAllBlogs {
         _id
@@ -27,18 +40,10 @@ export const getStaticProps = async(context) => {
   
     const resp =await request('https://progress-regularly.herokuapp.com/graphql',query)
 
+    setBlogs(resp.getAllBlogs)
+
     console.log('resp mudassir',resp);
-
-  return {
-    props: {
-      // test:JSON.parse(JSON.stringify(test.data.results))
-      blogs:resp.getAllBlogs
-    } // will be passed to the page component as props
   }
-}
-
-function pages({blogs}) {
-  console.log('i love you jani',blogs)
   return (
     <div className="w-100% bg-[#061019]">
         <Header />

@@ -1,12 +1,16 @@
 // Add Page Component
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {AiOutlineDoubleRight} from 'react-icons/ai'
 import {HiOutlinePlusCircle} from 'react-icons/hi'
+// import {useRouter} from 'next-router'
 import { CopyBlock, dracula } from "react-code-blocks";
 import ReactTerminalCommand from 'react-terminal-command'
 import {gql,request} from 'graphql-request'
+import {BsTrashFill} from 'react-icons/bs'
 import firebase from "../../firebase-config"
 import uri from '../../axios/axios'
+import { useRouter } from 'next/router'
+
 
 const db = firebase.storage();
 import Image from 'next/image';
@@ -17,7 +21,11 @@ import { useCollection } from "react-firebase-hooks/firestore";
 
 // const db = firebase.firestore();
 
-function AddPage() {
+function AddPage(prop) {
+
+    const router = useRouter()
+    const {articleEdit} = router.query
+
     const [title,setTitle] = useState('')
     const [intro,setIntro] = useState('')
     const [terminalCmds,setTerminalCmds] = useState([])
@@ -30,6 +38,54 @@ function AddPage() {
 
     const [image,setImage] = useState('')
     const [imageUrl,setImageUrl] = useState('')
+    const [useEffectController,setUseEffectController] = useState(false)
+
+    useEffect(()=>{
+        getData()
+        
+        return ()=>{
+            false
+        }
+    },[])
+
+    const getData = async()=>{
+        console.log('addPage: ',articleEdit)
+
+        const query = gql`
+            query($_id:String){
+                getBlogById(id:$_id){
+                    _id
+                    TitleImage 
+                    Title
+                    Introduction
+                    TerminalCommands
+                    Code
+                    Peragraphs
+                    FinalLine
+                    Views
+                    Likes
+                    LikeBy
+                    createdAt
+                }
+            }
+        `
+        if(articleEdit){
+            console.log('is it working: ');
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:articleEdit})
+        
+
+            console.log('get by id: ',resp.getBlogById)
+            setTitle(resp.getBlogById.Title)
+            setIntro(resp.getBlogById.Introduction)
+            setTerminalCmds(resp.getBlogById.TerminalCommands)
+            setCodes(resp.getBlogById.Code)
+            setPeras(resp.getBlogById.Peragraphs)
+            setEndline(resp.getBlogById.FinalLine)
+            setImageUrl(resp.getBlogById.TitleImage)
+        }
+
+    }
+    // getData()
 
     const handleFeilds = (e,arg)=>{
         if(arg=='title'){
@@ -64,10 +120,34 @@ function AddPage() {
     }
 
     const handleSubmit = async()=>{
-        console.log(`the title is: ${title} having intro ${intro} and endline: ${endline} code: ${terminalCmds}`)
-        console.log(terminalCmds)
-        console.log(codes)
-        console.log(peras)
+        
+        if(articleEdit){
+            console.log(`the title is: ${title} having intro ${intro} and endline: ${endline} code: ${terminalCmds}`)
+            console.log(terminalCmds)
+            console.log(codes)
+            console.log(peras)
+
+            const mutation = gql`
+                mutation($_id:String,$titleImage:String,$title:String,$introduction:String,$terminalCmds:[String],$code:[String],$peragraphs:[String],$finalLine:String){
+                    updateBlog(id:$_id,TitleImage:$titleImage, Title:$title, Introduction:$introduction, TerminalCommands:$terminalCmds,Code:$code,Peragraphs:$peragraphs,FinalLine:$finalLine){
+                        TitleImage
+                        Title
+                        Introduction
+                        TerminalCommands
+                        Code
+                        Peragraphs
+                        FinalLine
+                    }
+                }
+            `
+
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,terminalCmds:terminalCmds,code:codes,peragraphs:peras,finalLine:endline})
+
+            console.log('here is updResp: ',resp.updateBlog)
+        }else {
+
+        
+
 
         const query = gql`
             mutation($titleImg: String,$title: String, $intro: String, $cmds:[String], $code:[String], $pera:[String], $endline:String) {
@@ -85,6 +165,7 @@ function AddPage() {
 
         const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{titleImg:imageUrl,title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
         console.log(resp)
+        }
     }
 
     // const handleFireBaseUpload = e => {
@@ -129,6 +210,14 @@ function AddPage() {
        })
     })
     }
+
+    const filterArray = (setter,ArrayName,element) => {
+        console.log('clikced');
+        console.log('Array: ',ArrayName)
+        console.log('Element: ',element)
+
+        setter(ArrayName.filter(eachObj=>eachObj !== element))
+    }
   return (
     <div className="w-[100%] mx-auto bg-[#061019] text-white py-10">
         <div className="max-w-4xl mx-auto  my-5">
@@ -151,7 +240,7 @@ function AddPage() {
                         Title
                     </div>
                     <div className="inputFeildContainer px-3 rounded-lg bg-gray-200 flex justify-start items-center">
-                        <input onChange={(e) => handleFeilds(e, 'title')} className="w-[100%] rounded-lg  py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" />
+                        <input onChange={(e) => handleFeilds(e, 'title')} className="w-[100%] rounded-lg  py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" value={title} />
                     </div>
                 </div>
 
@@ -160,14 +249,16 @@ function AddPage() {
                         Introduction
                     </div>
                     <div className="inputFeildContainer px-3 rounded-lg bg-gray-200 flex justify-start items-center">
-                        <input onChange={(e) => handleFeilds(e, 'intro')} className="w-[100%] rounded-lg px-3 py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" />
+                        <input onChange={(e) => handleFeilds(e, 'intro')} className="w-[100%] rounded-lg px-3 py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" value={intro} />
                     </div>
                 </div>
 
                 {terminalCmds.length>0 && terminalCmds.map(eachCmd=>(
-                    <div className="w-[90%] md:w-[100%] mx-auto rounded-lg my-3">
+                    <div className="w-[90%] md:w-[100%] mx-auto rounded-lg my-3 relative">
                         <ReactTerminalCommand command={eachCmd} />
+                        <BsTrashFill onClick={()=>filterArray(setTerminalCmds,terminalCmds,eachCmd)} className='absolute right-2 bottom-2 text-red-500' />
                     </div>
+
                 ))}
 
                 <div className="my-5 flex flex-col justify-end items-end">
@@ -189,7 +280,7 @@ function AddPage() {
                     <div className="my-10">
                     <div className="my-4 w-[100%]">
                         {codes.length>0 && codes.map(eachCode=>(
-                            <div className="codeBlock w-[100%] mx-auto rounded-lg my-3">
+                            <div className="codeBlock w-[100%] mx-auto rounded-lg my-3 relative">
                                 <CopyBlock
                                     text={eachCode}
                                     language='jsx'
@@ -198,6 +289,7 @@ function AddPage() {
                                     wrapLines={true}
                                     codeBlock
                                 />
+                                <BsTrashFill onClick={()=>filterArray(setCodes,codes,eachCode)} className='absolute right-2 bottom-2 text-red-500' />
                             </div>
                             ))}
                      </div>
@@ -218,8 +310,9 @@ function AddPage() {
 
                     <div className="my-10">
                     {peras.length>0 && peras.map(eachPera=>(
-                    <div className="desc text-white text-xl my-5">
-                        {eachPera}
+                    <div className="desc text-white text-xl my-5 relative">
+                       <span> {eachPera}</span>
+                       <BsTrashFill onClick={()=>filterArray(setPeras,peras,eachPera)} className='absolute right-2 bottom-2 text-red-500' />
                     </div>))}
                 <div className="eachFeildContainer ">
                     <div className="text-white text-xl font-semibold">
@@ -244,12 +337,12 @@ function AddPage() {
                         Ending
                     </div>
                     <div className="inputFeildContainer px-3 rounded-lg bg-gray-200 flex justify-start items-center">
-                        <input onChange={(e) => handleFeilds(e, 'endline')} className="w-[100%] rounded-lg px-3 py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" />
+                        <input onChange={(e) => handleFeilds(e, 'endline')} className="w-[100%] rounded-lg px-3 py-2 px-1 text-[#061019] bg-transparent text-2xl font-medium focus:outline-none" type="text" value={endline} />
                     </div>
                 </div>
 
                 <div onClick={handleSubmit} className="my-10 w-[100%] bg-gradient-to-r from-[#E21B70] to-[#00B9E8] py-3 text-center rounded-lg text-2xl transition delay-200 cursor-pointer">
-                        Add Post
+                        {articleEdit?'Update':'Add' }  Post
                 </div>
 
             </div>

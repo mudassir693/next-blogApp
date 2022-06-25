@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+// import ExportedImage from "next-image-export-optimizer";
 
 const Home: NextPage = () => {
   return (
@@ -76,7 +77,7 @@ const Home: NextPage = () => {
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          {/* <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} /> */}
         </a>
       </footer>
     </div>
