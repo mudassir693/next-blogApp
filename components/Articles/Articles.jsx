@@ -33,9 +33,7 @@ function Articles({articles}) {
         TitleImage
         Title
         Introduction
-        TerminalCommands
-        Code
-        Peragraphs
+        Body
         FinalLine
         Views,
         Likes
@@ -43,7 +41,7 @@ function Articles({articles}) {
     } 
   `
   
-    const resp =await request('https://progress-regularly.herokuapp.com/graphql',query)
+    const resp =await request('http://localhost:5000/graphql',query)
     setBlogList(resp.getAllBlogs)
 
     console.log('get articles from useEffect: ',resp);

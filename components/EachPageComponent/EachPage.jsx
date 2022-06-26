@@ -9,6 +9,7 @@ import {gql,request} from 'graphql-request'
 import Modal from '../Modal/Modal';
 import {context} from '../../projectContext/ProjectContext'
 import {useRouter} from 'next/router'
+import TerminalComp from '../TerminalComp/TerminalComp';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
@@ -22,15 +23,15 @@ function EachPage({pageData}) {
 
 
     const {modal,login,toggleModal} = useContext(context)
+    const [bodyArray,setBodyArray] = useState([])
+ 
 
     const [blog,setBlog]= useState({
         _id:'',
         TitleImage:'',
         Title:'',
         Introduction:'',
-        TerminalCommands:[],
-        Code:[],
-        Peragraphs:[],
+        Body:[],
         FinalLine:'',
         Views:'',
         Likes:'',
@@ -53,9 +54,7 @@ function EachPage({pageData}) {
             TitleImage
             Title
             Introduction
-            TerminalCommands
-            Code
-            Peragraphs
+            Body
             FinalLine
             Views
             Likes
@@ -63,9 +62,12 @@ function EachPage({pageData}) {
           }
         }
         `
-        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:eachPage})
+        const resp = await request('http://localhost:5000/graphql',query,{_id:eachPage})
 
         console.log('this is from useEffect: ',resp.getBlogById);
+
+
+
         setBlog(resp?.getBlogById)
         setBlogLiked(resp?.getBlogById.LikeBy.includes(login._id)?true:false)
         console.log('this time it blog is : ',resp?.getBlogById.LikeBy.includes(login._id)?true:false)
@@ -92,7 +94,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage ,readerId:login._id})
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage ,readerId:login._id})
             console.log('is everything goes well: ',resp)
             setBlogLiked(true)
 
@@ -108,7 +110,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage,readerId:login._id})
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage,readerId:login._id})
             console.log('is everything goes well2: ',resp)
             setBlogLiked(false)
         }
@@ -128,13 +130,14 @@ function EachPage({pageData}) {
             </div>
             <div className="text-2xl w-[90%] md:w-[80%] mx-auto font-thin my-10">
                 {blog?.Introduction}
+                {/* {blog?.Body.length} */}
             </div>
-            {blog?.TerminalCommands.length>0 &&  blog?.TerminalCommands.map(eachCmd=>(
-                    <div className="w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
-                        <ReactTerminalCommand command={eachCmd} />
-                    </div>
-                ))}
-            {blog?.Code.length>0 && blog?.Code.map(eachCode=>(
+
+
+            {blog?.Body.map(eachId=>(
+                <TerminalComp id={eachId} />
+            ))}
+            {/* {blog?.Code.length>0 && blog?.Code.map(eachCode=>(
             <div className="codeBlock w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
                 <CopyBlock
                     // text={ `
@@ -152,12 +155,12 @@ function EachPage({pageData}) {
                     wrapLines={true}
                     codeBlock
                 />
-            </div>))}
+            </div>))} */}
             <div className="descContainer w-[90%] md:w-[90%] mx-auto">
-                {blog?.Peragraphs.length>0 && blog?.Peragraphs.map(eachPera=>(
+                {/* {blog?.Peragraphs.length>0 && blog?.Peragraphs.map(eachPera=>(
                 <div className="desc text-white text-xl my-5">
                     {eachPera}
-                </div>))}
+                </div>))} */}
                 {/* <CopyBlock
                     text={ `
                     import React from 'react'

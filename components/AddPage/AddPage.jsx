@@ -38,6 +38,8 @@ function AddPage(prop) {
 
     const [image,setImage] = useState('')
     const [imageUrl,setImageUrl] = useState('')
+    const [bodyArrayId ,setBodyArrayId] = useState([])
+    const [bodyArray,setBodyArray] = useState([])
     const [useEffectController,setUseEffectController] = useState(false)
 
     useEffect(()=>{
@@ -71,7 +73,7 @@ function AddPage(prop) {
         `
         if(articleEdit){
             console.log('is it working: ');
-            const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:articleEdit})
+            const resp = await request('http://localhost:5000/graphql',query,{_id:articleEdit})
         
 
             console.log('get by id: ',resp.getBlogById)
@@ -106,14 +108,67 @@ function AddPage(prop) {
     }
 
     
-    const handleArrays = (param)=>{ 
+    const handleArrays = async(param)=>{ 
         if(param=='codes'){
+            const mutation = gql`
+                mutation($content: String){
+                    addBlock(Type:"Code",Position:"",Content:$content){
+                        _id
+                        Type
+                        Position
+                        Content
+                    }
+                }
+            `
+
+            const resp = await request('http://localhost:5000/graphql',mutation,{content:code})
+
+            setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+            setBodyArray([...bodyArray,resp.addBlock])
             setCodes([...codes,code])
             setCode('')
         }else if(param=='peras'){
+
+            const mutation = gql`
+            mutation($content: String){
+                addBlock(Type:"Pera",Position:"",Content:$content){
+                    _id
+                    Type
+                    Position
+                    Content
+                }
+            }
+        `
+
+        const resp = await request('http://localhost:5000/graphql',mutation,{content:pera})
+
+        setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+        setBodyArray([...bodyArray,resp.addBlock])
+
             setPeras([...peras,pera])
             setPera('')
         }else if(param=='tCmds'){
+
+            console.log('triggered');
+
+            const mutation = gql`
+            mutation($content: String){
+                addBlock(Type:"Terminal",Position:"",Content:$content){
+                    _id
+                    Type
+                    Position
+                    Content
+                }
+            }
+        `
+
+        const resp = await request('http://localhost:5000/graphql',mutation,{content:tCmd})
+
+        console.log('here i found it: ',resp.addBlock);
+
+        setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+        setBodyArray([...bodyArray,resp.addBlock])
+
             setTerminalCmds([...terminalCmds,tCmd])
             setTCmd('')
         }
@@ -141,29 +196,27 @@ function AddPage(prop) {
                 }
             `
 
-            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,terminalCmds:terminalCmds,code:codes,peragraphs:peras,finalLine:endline})
+            const resp = await request('http://localhost:5000/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,terminalCmds:terminalCmds,code:codes,peragraphs:peras,finalLine:endline})
 
             console.log('here is updResp: ',resp.updateBlog)
         }else {
 
         
-
+            console.log('what is this:');
 
         const query = gql`
-            mutation($titleImg: String,$title: String, $intro: String, $cmds:[String], $code:[String], $pera:[String], $endline:String) {
-                AddBlog(TitleImage:$titleImg,Title:$title, Introduction:$intro ,TerminalCommands:$cmds ,Code:$code,Peragraphs:$pera,FinalLine:$endline){
-                TitleImage
-                Title
-                Introduction
-                TerminalCommands
-                Code
-                Peragraphs
-                FinalLine
+            mutation($titleImg: String,$title: String, $intro: String, $body: [String], $endline:String) {
+                    AddBlog(TitleImage:$titleImg,Title:$title, Introduction:$intro, Body: $body, FinalLine:$endline){
+                    TitleImage
+                    Title
+                    Introduction
+                    Body
+                    FinalLine
                 }
             }
         `
 
-        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{titleImg:imageUrl,title: title, intro: intro, cmds:terminalCmds, code:codes, pera:peras, endline:endline})
+        const resp = await request('http://localhost:5000/graphql',query,{titleImg:imageUrl,title: title, intro: intro, body: bodyArrayId, endline:endline})
         console.log(resp)
         }
     }
@@ -253,11 +306,39 @@ function AddPage(prop) {
                     </div>
                 </div>
 
-                {terminalCmds.length>0 && terminalCmds.map(eachCmd=>(
-                    <div className="w-[90%] md:w-[100%] mx-auto rounded-lg my-3 relative">
-                        <ReactTerminalCommand command={eachCmd} />
-                        <BsTrashFill onClick={()=>filterArray(setTerminalCmds,terminalCmds,eachCmd)} className='absolute right-2 bottom-2 text-red-500' />
-                    </div>
+                {bodyArray.length>0 && bodyArray.map(block=>(
+
+                    <div>
+
+           {block?.Type=='Terminal' && <div className="w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
+                <ReactTerminalCommand command={block?.Content} />
+            </div>}
+
+            {block?.Type=="Pera" && <div className="w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
+                <div className="desc text-white text-xl my-5">
+                    {block?.Content}
+                </div>
+            </div>}
+
+           { block?.Type=="Code" && <div className="w-[90%] md:w-[80%] mx-auto rounded-lg my-3">
+                <div className="desc text-white text-xl my-5">
+                    <CopyBlock
+                        text={block?.Content}
+                        language='jsx'
+                        showLineNumbers={true}
+                        theme={dracula}
+                        wrapLines={true}
+                        codeBlock
+                    />
+                </div>
+            </div>}
+
+            </div>
+
+                    // <div className="w-[90%] md:w-[100%] mx-auto rounded-lg my-3 relative">
+                    //     <ReactTerminalCommand command={eachCmd} />
+                    //     <BsTrashFill onClick={()=>filterArray(setTerminalCmds,terminalCmds,eachCmd)} className='absolute right-2 bottom-2 text-red-500' />
+                    // </div>
 
                 ))}
 
@@ -279,7 +360,7 @@ function AddPage(prop) {
                 </div>
                     <div className="my-10">
                     <div className="my-4 w-[100%]">
-                        {codes.length>0 && codes.map(eachCode=>(
+                        {/* {codes.length>0 && codes.map(eachCode=>(
                             <div className="codeBlock w-[100%] mx-auto rounded-lg my-3 relative">
                                 <CopyBlock
                                     text={eachCode}
@@ -291,7 +372,7 @@ function AddPage(prop) {
                                 />
                                 <BsTrashFill onClick={()=>filterArray(setCodes,codes,eachCode)} className='absolute right-2 bottom-2 text-red-500' />
                             </div>
-                            ))}
+                            ))} */}
                      </div>
                 <div className="eachFeildContainer ">
                     <div className="text-white text-xl font-semibold">
@@ -309,11 +390,11 @@ function AddPage(prop) {
                     </div>
 
                     <div className="my-10">
-                    {peras.length>0 && peras.map(eachPera=>(
+                    {/* {peras.length>0 && peras.map(eachPera=>(
                     <div className="desc text-white text-xl my-5 relative">
                        <span> {eachPera}</span>
                        <BsTrashFill onClick={()=>filterArray(setPeras,peras,eachPera)} className='absolute right-2 bottom-2 text-red-500' />
-                    </div>))}
+                    </div>))} */}
                 <div className="eachFeildContainer ">
                     <div className="text-white text-xl font-semibold">
                         Peragraphs
