@@ -10,11 +10,12 @@ import {BsTrashFill} from 'react-icons/bs'
 import firebase from "../../firebase-config"
 import uri from '../../axios/axios'
 import { useRouter } from 'next/router'
-
+// import { request,gql } from 'graphql-request';
 
 const db = firebase.storage();
 import Image from 'next/image';
 import { useCollection } from "react-firebase-hooks/firestore";
+import TerminalComp from '../TerminalComp/TerminalComp';
 // import { useDocument } from "react-firebase-hooks/firestore";
 // import firebase from "../firebase/clientApp";
 // 
@@ -33,6 +34,7 @@ function AddPage(prop) {
     const [codes,setCodes] = useState([])
     const [code,setCode] = useState('')
     const [peras,setPeras] = useState([])
+    const [bodyIds,setBodyIds] = useState([])
     const [pera,setPera] = useState('')
     const [endline,setEndline] = useState('')
 
@@ -40,6 +42,8 @@ function AddPage(prop) {
     const [imageUrl,setImageUrl] = useState('')
     const [bodyArrayId ,setBodyArrayId] = useState([])
     const [bodyArray,setBodyArray] = useState([])
+    const [toggler,setToggler] = useState(false)
+    
     const [useEffectController,setUseEffectController] = useState(false)
 
     useEffect(()=>{
@@ -48,7 +52,8 @@ function AddPage(prop) {
         return ()=>{
             false
         }
-    },[])
+    },[toggler])
+
 
     const getData = async()=>{
         console.log('addPage: ',articleEdit)
@@ -60,9 +65,7 @@ function AddPage(prop) {
                     TitleImage 
                     Title
                     Introduction
-                    TerminalCommands
-                    Code
-                    Peragraphs
+                    Body
                     FinalLine
                     Views
                     Likes
@@ -73,15 +76,17 @@ function AddPage(prop) {
         `
         if(articleEdit){
             console.log('is it working: ');
-            const resp = await request('http://localhost:5000/graphql',query,{_id:articleEdit})
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:articleEdit})
         
 
             console.log('get by id: ',resp.getBlogById)
             setTitle(resp.getBlogById.Title)
             setIntro(resp.getBlogById.Introduction)
-            setTerminalCmds(resp.getBlogById.TerminalCommands)
-            setCodes(resp.getBlogById.Code)
-            setPeras(resp.getBlogById.Peragraphs)
+            // setTerminalCmds(resp.getBlogById.TerminalCommands)
+            // setCodes(resp.getBlogById.Code)
+            // setPeras(resp.getBlogById.Peragraphs)
+            setBodyArrayId(resp.getBlogById.Body)
+            setBodyIds(resp.getBlogById.Body)
             setEndline(resp.getBlogById.FinalLine)
             setImageUrl(resp.getBlogById.TitleImage)
         }
@@ -121,9 +126,14 @@ function AddPage(prop) {
                 }
             `
 
-            const resp = await request('http://localhost:5000/graphql',mutation,{content:code})
+
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:code})
+
+            console.log('it goes here: ',resp.addBlock)
+
 
             setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+            setBodyIds([...bodyIds,resp.addBlock._id])
             setBodyArray([...bodyArray,resp.addBlock])
             setCodes([...codes,code])
             setCode('')
@@ -140,10 +150,11 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',mutation,{content:pera})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:pera})
 
         setBodyArrayId([...bodyArrayId,resp.addBlock._id])
         setBodyArray([...bodyArray,resp.addBlock])
+        setBodyIds([...bodyIds,resp.addBlock._id])
 
             setPeras([...peras,pera])
             setPera('')
@@ -162,11 +173,12 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',mutation,{content:tCmd})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:tCmd})
 
         console.log('here i found it: ',resp.addBlock);
 
         setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+        setBodyIds([...bodyIds,resp.addBlock._id])
         setBodyArray([...bodyArray,resp.addBlock])
 
             setTerminalCmds([...terminalCmds,tCmd])
@@ -178,25 +190,22 @@ function AddPage(prop) {
         
         if(articleEdit){
             console.log(`the title is: ${title} having intro ${intro} and endline: ${endline} code: ${terminalCmds}`)
-            console.log(terminalCmds)
-            console.log(codes)
-            console.log(peras)
+
+            console.log('length: ', bodyIds);
 
             const mutation = gql`
-                mutation($_id:String,$titleImage:String,$title:String,$introduction:String,$terminalCmds:[String],$code:[String],$peragraphs:[String],$finalLine:String){
-                    updateBlog(id:$_id,TitleImage:$titleImage, Title:$title, Introduction:$introduction, TerminalCommands:$terminalCmds,Code:$code,Peragraphs:$peragraphs,FinalLine:$finalLine){
+                mutation($_id:String,$titleImage:String,$title:String,$introduction:String,$body:[String],$finalLine:String){
+                    updateBlog(id:$_id,TitleImage:$titleImage, Title:$title, Introduction:$introduction, Body:$body ,FinalLine:$finalLine){
                         TitleImage
                         Title
                         Introduction
-                        TerminalCommands
-                        Code
-                        Peragraphs
+                        Body
                         FinalLine
                     }
                 }
             `
 
-            const resp = await request('http://localhost:5000/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,terminalCmds:terminalCmds,code:codes,peragraphs:peras,finalLine:endline})
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,body:bodyIds,finalLine:endline})
 
             console.log('here is updResp: ',resp.updateBlog)
         }else {
@@ -216,7 +225,7 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',query,{titleImg:imageUrl,title: title, intro: intro, body: bodyArrayId, endline:endline})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{titleImg:imageUrl,title: title, intro: intro, body: bodyArrayId, endline:endline})
         console.log(resp)
         }
     }
@@ -264,6 +273,8 @@ function AddPage(prop) {
     })
     }
 
+    
+
     const filterArray = (setter,ArrayName,element) => {
         console.log('clikced');
         console.log('Array: ',ArrayName)
@@ -306,7 +317,11 @@ function AddPage(prop) {
                     </div>
                 </div>
 
-                {bodyArray.length>0 && bodyArray.map(block=>(
+                {articleEdit && bodyIds?.map(eachId=>(
+                    <TerminalComp id={eachId} edit={true} bodyIds={bodyIds} setBodyIds={setBodyIds} setToggler={setToggler} toggler={toggler} />
+                ))}
+
+                {(!articleEdit && bodyArray.length>0) && bodyArray.map(block=>(
 
                     <div>
 

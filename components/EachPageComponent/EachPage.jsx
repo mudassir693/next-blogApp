@@ -62,7 +62,7 @@ function EachPage({pageData}) {
           }
         }
         `
-        const resp = await request('http://localhost:5000/graphql',query,{_id:eachPage})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:eachPage})
 
         console.log('this is from useEffect: ',resp.getBlogById);
 
@@ -94,7 +94,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage ,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage ,readerId:login._id})
             console.log('is everything goes well: ',resp)
             setBlogLiked(true)
 
@@ -110,7 +110,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage,readerId:login._id})
             console.log('is everything goes well2: ',resp)
             setBlogLiked(false)
         }
