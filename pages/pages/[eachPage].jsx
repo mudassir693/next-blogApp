@@ -26,7 +26,7 @@ import { request, gql } from 'graphql-request'
 //     }
 //   }
 //   `
-//   const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:targetId})
+//   const resp = await request('http://localhost:5000/graphql',query,{_id:targetId})
 
 //   // console.log(resp.getBlogById)
 

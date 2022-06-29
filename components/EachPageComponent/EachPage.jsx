@@ -10,6 +10,8 @@ import Modal from '../Modal/Modal';
 import {context} from '../../projectContext/ProjectContext'
 import {useRouter} from 'next/router'
 import TerminalComp from '../TerminalComp/TerminalComp';
+import CommentComponent from '../CommentComponent/CommentComponent';
+import AddComment from '../AddComment/AddComment';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
@@ -24,6 +26,9 @@ function EachPage({pageData}) {
 
     const {modal,login,toggleModal} = useContext(context)
     const [bodyArray,setBodyArray] = useState([])
+    const [display,setDisplay] = useState(false)
+    const [toggler,setToggler] = useState(false)
+    const [allComments, setAllComments] = useState([])
  
 
     const [blog,setBlog]= useState({
@@ -43,14 +48,15 @@ function EachPage({pageData}) {
     useEffect(()=>{
         getPageData()
         console.log('toggle: ',blogLiked)
-    },[blogLiked])
+    },[blogLiked, toggler])
 
     const getPageData = async()=>{
-
+        setDisplay(false)
         const query = gql`
         query($_id:String) {
           getBlogById(id:$_id){
             _id
+            BlogId
             TitleImage
             Title
             Introduction
@@ -58,13 +64,32 @@ function EachPage({pageData}) {
             FinalLine
             Views
             Likes
+            PublishDate
+            Comments
             LikeBy
           }
         }
         `
-        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:eachPage})
+        const resp = await request('http://localhost:5000/graphql',query,{_id:eachPage})
 
-        console.log('this is from useEffect: ',resp.getBlogById);
+        console.log('this is from useEffect: ',resp.getBlogById.Comments);
+
+        const getComments2 = gql`
+            query($id:String){
+                getAllCommentFromEachBlog(id:$id){
+                    _id
+                    BlogId
+                    ReaderId
+                    Content
+                    PublishDate
+                }
+            }
+        ` 
+        const resp2 = await request('http://localhost:5000/graphql',getComments2,{id:resp.getBlogById._id})
+
+        console.log('here we have every thing correct: ', resp2)
+
+        setAllComments(resp2.getAllCommentFromEachBlog)
 
 
 
@@ -72,6 +97,7 @@ function EachPage({pageData}) {
         setBlogLiked(resp?.getBlogById.LikeBy.includes(login._id)?true:false)
         console.log('this time it blog is : ',resp?.getBlogById.LikeBy.includes(login._id)?true:false)
         console.log('user: ',login._id)
+        setDisplay(true)
         return () => {
             console.log("This will be logged on unmount");
         }
@@ -94,7 +120,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage ,readerId:login._id})
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage ,readerId:login._id})
             console.log('is everything goes well: ',resp)
             setBlogLiked(true)
 
@@ -110,7 +136,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage,readerId:login._id})
+            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage,readerId:login._id})
             console.log('is everything goes well2: ',resp)
             setBlogLiked(false)
         }
@@ -121,7 +147,7 @@ function EachPage({pageData}) {
   return (
     <div className="bg-[#061019] py-10">
         {modal && <Modal />}
-        <div className="max-w-4xl mx-auto text-white my-5">
+        {display && <div className="max-w-4xl mx-auto text-white my-5">
             {blog.TitleImage && <div className="profileImageContainer h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto ">
                 <Image className="rounded-[2rem]" src={blog?.TitleImage} objectFit="cover" layout='fill' />
             </div>}
@@ -184,8 +210,20 @@ function EachPage({pageData}) {
                 <span className='mx-2'> Heart it if You like.</span> {(blog?.LikeBy.includes(login._id)) ? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />}
                    {/* {blogLiked? <BsSuitHeartFill className='text-2xl text-[#DA0060]'  /> : <BsSuitHeart className='text-2xl text-[#DA0060]'  />} */}
                 </div>
+                <div className="mx-2 my-5 font-bold text-xl text-white">
+                    Comments
+                </div>
+                <div>
+                    <AddComment setToggler={setToggler} toggler={toggler} blogId={blog?._id} />
+                </div>
+
+                {allComments?.length>0 && allComments?.map(eachCmt=>(
+                    <CommentComponent comment={eachCmt} />
+                ))}
+
             </div>
-        </div>
+        </div>}
+        {!display && <div> Loading....</div> }
     </div>
   )
 }

@@ -36,7 +36,7 @@ function pages(prop) {
     } 
   `
   
-    const resp =await request('https://progress-regularly.herokuapp.com/graphql',query)
+    const resp =await request('http://localhost:5000/graphql',query)
 
     setBlogs(resp.getAllBlogs)
 
