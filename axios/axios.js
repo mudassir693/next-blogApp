@@ -1,4 +1,4 @@
-const api = 'http://localhost:5000/graphql'
+const api = 'https://progress-regularly.herokuapp.com/graphql'
 
 
 export default api

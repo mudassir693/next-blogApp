@@ -25,7 +25,7 @@ function Modal() {
                   }
             }
         `
-        const resp = await request('http://localhost:5000/graphql',addMutation,{name:formData.Name,email:formData.Email,admin:false})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',addMutation,{name:formData.Name,email:formData.Email,admin:false})
         console.log(resp.addReader)
         setLogin(resp.addReader)
         toggleModal()

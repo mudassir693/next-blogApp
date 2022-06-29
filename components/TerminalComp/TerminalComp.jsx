@@ -26,7 +26,7 @@ function TerminalComp({id, edit, bodyIds,setBodyIds,toggler,setToggler}) {
             }
         }
     `
-    const resp = await request('http://localhost:5000/graphql',anotherQuery,{_id:id})
+    const resp = await request('https://progress-regularly.herokuapp.com/graphql',anotherQuery,{_id:id})
 
     setBlock(resp?.getBlockById)
     }
@@ -42,7 +42,7 @@ function TerminalComp({id, edit, bodyIds,setBodyIds,toggler,setToggler}) {
             }
         ` 
 
-        const resp = await request('http://localhost:5000/graphql',query,{id:id})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{id:id})
 
         console.log('block deleted sucessfully')
         console.log('bodyIds: ', bodyIds);

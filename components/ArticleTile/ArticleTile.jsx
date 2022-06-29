@@ -34,7 +34,7 @@ function ArticleTile({imgSrc,article,toggler,setToggler}) {
         }
       }
       `
-      const deleteResp =await request('http://localhost:5000/graphql',deleteBlog,{id:BlogId}) 
+      const deleteResp =await request('https://progress-regularly.herokuapp.com/graphql',deleteBlog,{id:BlogId}) 
       console.log('deleteResp: ',deleteResp)
       setToggler(!toggler)
     }

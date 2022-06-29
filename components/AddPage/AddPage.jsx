@@ -76,7 +76,7 @@ function AddPage(prop) {
         `
         if(articleEdit){
             console.log('is it working: ');
-            const resp = await request('http://localhost:5000/graphql',query,{_id:articleEdit})
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:articleEdit})
         
 
             console.log('get by id: ',resp.getBlogById)
@@ -127,7 +127,7 @@ function AddPage(prop) {
             `
 
 
-            const resp = await request('http://localhost:5000/graphql',mutation,{content:code})
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:code})
 
             console.log('it goes here: ',resp.addBlock)
 
@@ -150,7 +150,7 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',mutation,{content:pera})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:pera})
 
         setBodyArrayId([...bodyArrayId,resp.addBlock._id])
         setBodyArray([...bodyArray,resp.addBlock])
@@ -173,7 +173,7 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',mutation,{content:tCmd})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{content:tCmd})
 
         console.log('here i found it: ',resp.addBlock);
 
@@ -205,7 +205,7 @@ function AddPage(prop) {
                 }
             `
 
-            const resp = await request('http://localhost:5000/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,body:bodyIds,finalLine:endline})
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{_id:articleEdit,titleImage:imageUrl,title:title,introduction:intro,body:bodyIds,finalLine:endline})
 
             console.log('here is updResp: ',resp.updateBlog)
         }else {
@@ -225,7 +225,7 @@ function AddPage(prop) {
             }
         `
 
-        const resp = await request('http://localhost:5000/graphql',query,{titleImg:imageUrl,title: title, intro: intro, body: bodyArrayId, endline:endline})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{titleImg:imageUrl,title: title, intro: intro, body: bodyArrayId, endline:endline})
         console.log(resp)
         }
     }

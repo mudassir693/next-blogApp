@@ -26,7 +26,7 @@ function EachPage({pageData}) {
 
     const {modal,login,toggleModal} = useContext(context)
     const [bodyArray,setBodyArray] = useState([])
-    const [display,setDisplay] = useState(false)
+    const [display,setDisplay] = useState(true)
     const [toggler,setToggler] = useState(false)
     const [allComments, setAllComments] = useState([])
  
@@ -48,10 +48,10 @@ function EachPage({pageData}) {
     useEffect(()=>{
         getPageData()
         console.log('toggle: ',blogLiked)
-    },[blogLiked, toggler])
+    },[blogLiked])
 
     const getPageData = async()=>{
-        setDisplay(false)
+        // setDisplay(false)
         const query = gql`
         query($_id:String) {
           getBlogById(id:$_id){
@@ -70,7 +70,7 @@ function EachPage({pageData}) {
           }
         }
         `
-        const resp = await request('http://localhost:5000/graphql',query,{_id:eachPage})
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',query,{_id:eachPage})
 
         console.log('this is from useEffect: ',resp.getBlogById.Comments);
 
@@ -85,7 +85,7 @@ function EachPage({pageData}) {
                 }
             }
         ` 
-        const resp2 = await request('http://localhost:5000/graphql',getComments2,{id:resp.getBlogById._id})
+        const resp2 = await request('https://progress-regularly.herokuapp.com/graphql',getComments2,{id:resp.getBlogById._id})
 
         console.log('here we have every thing correct: ', resp2)
 
@@ -97,7 +97,7 @@ function EachPage({pageData}) {
         setBlogLiked(resp?.getBlogById.LikeBy.includes(login._id)?true:false)
         console.log('this time it blog is : ',resp?.getBlogById.LikeBy.includes(login._id)?true:false)
         console.log('user: ',login._id)
-        setDisplay(true)
+        // setDisplay(true)
         return () => {
             console.log("This will be logged on unmount");
         }
@@ -120,7 +120,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage ,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage ,readerId:login._id})
             console.log('is everything goes well: ',resp)
             setBlogLiked(true)
 
@@ -136,7 +136,7 @@ function EachPage({pageData}) {
               }
             `
     
-            const resp = await request(`http://localhost:5000/graphql`,mutation,{id:eachPage,readerId:login._id})
+            const resp = await request(`https://progress-regularly.herokuapp.com/graphql`,mutation,{id:eachPage,readerId:login._id})
             console.log('is everything goes well2: ',resp)
             setBlogLiked(false)
         }
@@ -214,7 +214,7 @@ function EachPage({pageData}) {
                     Comments
                 </div>
                 <div>
-                    <AddComment setToggler={setToggler} toggler={toggler} blogId={blog?._id} />
+                    <AddComment allComments={allComments} setAllComments={setAllComments} blogId={blog?._id} />
                 </div>
 
                 {allComments?.length>0 && allComments?.map(eachCmt=>(

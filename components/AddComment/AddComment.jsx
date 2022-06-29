@@ -4,13 +4,19 @@ import {gql,request} from 'graphql-request'
 
 
 
-const AddComment = ({blogId, toggler, setToggler}) => {
+const AddComment = ({blogId, setAllComments, allComments}) => {
 
     const {setLogin, login, modal, toggleModal} = useContext(context)
-    const [message,setMessage] = useState()
+    const [message,setMessage] = useState('')
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
+        console.log(message.length)
+        if(message.length==0){
+            console.log('wrong submission');
+            return
+        }
+
         console.log('message is : ',message)
 
         const mutation = gql`
@@ -25,15 +31,16 @@ const AddComment = ({blogId, toggler, setToggler}) => {
         }
     `
 
-        const resp = await request('http://localhost:5000/graphql',mutation,{blogId:blogId, readerId:login._id, content:message })
+        const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{blogId:blogId, readerId:login._id, content:message })
 
         console.log('comment added sucessfully: ',resp.addComment);
+
+        setAllComments([ ...allComments, resp?.addComment])
 
         console.log('click triggered: ' )
 
         setMessage('')
 
-        setToggler(!toggler)
     }
 
     const onClickCheckUserLogin = async()=>{
