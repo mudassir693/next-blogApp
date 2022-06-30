@@ -11,8 +11,17 @@ import {context} from './../../projectContext/ProjectContext'
 
 
 
+
 function Header() {
-    const {login} = useContext(context)
+    const {login,toggleModal} = useContext(context)
+
+    const navigator = ()=>{
+        router.push(`/profile/${login?._id}`)
+    }
+
+    const registerModal = async()=>{
+        toggleModal()
+    }
     // console.log(props)
     const router = useRouter()
     const handleContact = (route)=>{
@@ -27,12 +36,15 @@ function Header() {
                 {/* <CgFormatSlash  /> */}
                 <FaAngleRight />
             </div>
-            <div className="nameContainer text-white text-xl block md:hidden font-bold">
+            <div onClick={navigator} className="nameContainer cursor-pointer text-white text-xl block md:hidden font-bold">
                 {login.Name && login?.Name.split(' ')[0]}
             </div>
-            <div className="nameContainer text-white text-xl hidden md:block font-bold">
+            <div onClick={navigator} className="nameContainer cursor-pointer text-white text-xl hidden md:block font-bold">
                 {login.Name && login?.Name}
             </div>
+            {!login.Name &&  <div onClick={registerModal} className="nameContainer text-white px-4 py-1 text-sm rounded-full cursor-pointer font-light border-2 border-[#E21B70]">
+                <div>Login/Register</div> 
+            </div>}
         </div>
     </div>
   )
