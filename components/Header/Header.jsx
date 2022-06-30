@@ -27,8 +27,11 @@ function Header() {
                 {/* <CgFormatSlash  /> */}
                 <FaAngleRight />
             </div>
-            <div className="nameContainer text-white text-xl font-bold">
-                {login && login.Name}
+            <div className="nameContainer text-white text-xl block md:hidden font-bold">
+                {login.Name && login?.Name.split(' ')[0]}
+            </div>
+            <div className="nameContainer text-white text-xl hidden md:block font-bold">
+                {login.Name && login?.Name}
             </div>
         </div>
     </div>

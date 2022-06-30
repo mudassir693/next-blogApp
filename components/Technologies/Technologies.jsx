@@ -16,8 +16,8 @@ function Technologies() {
             <div className="text-2xl font-semibold px-3 lg:px-0">
                 Skill
             </div>
-            <div className="technoligiesContainerIconSection mt-10 flex justify-between items-center flex-wrap">
-                <div className="cursor-pointer hover:text-[#42b883]">
+            <div className="technoligiesContainerIconSection mt-10 flex justify-between items-center overflow-x-scroll md:overflow-hidden py-4">
+                <div className="cursor-pointer hover:text-[#42b883] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <FaVuejs className="mx-auto"  />
                     </div>
@@ -26,7 +26,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#61DBFB]">
+                <div className="cursor-pointer hover:text-[#61DBFB] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <FaReact className="mx-auto" />
                     </div>
@@ -35,7 +35,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#764abc]">
+                <div className="cursor-pointer hover:text-[#764abc] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <SiRedux className="mx-auto" />
                     </div>
@@ -44,7 +44,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#000000]">
+                <div className="cursor-pointer hover:text-[#000000] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <TbBrandNextjs className="mx-auto"  />
                     </div>
@@ -53,7 +53,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#3c873a]">
+                <div className="cursor-pointer hover:text-[#3c873a] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <IoLogoNodejs className="mx-auto"  />
                     </div>
@@ -62,7 +62,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#E21B70]">
+                <div className="cursor-pointer hover:text-[#E21B70] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <SiApollographql className="mx-auto"  />
                     </div>
@@ -71,7 +71,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#61DBFB]">
+                <div className="cursor-pointer hover:text-[#61DBFB] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <GrDocker className="mx-auto"  />
                     </div>
@@ -80,7 +80,7 @@ function Technologies() {
                     </div>
                 </div>
 
-                <div className="cursor-pointer hover:text-[#61DBFB]">
+                <div className="cursor-pointer hover:text-[#61DBFB] mx-4 md:mx-0">
                     <div className="container text-5xl my-3 ">
                     <SiKubernetes className="mx-auto"  />
                     </div>
