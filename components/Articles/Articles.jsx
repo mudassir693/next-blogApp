@@ -37,6 +37,7 @@ function Articles({articles}) {
         FinalLine
         Views,
         Likes
+        PublishDate
       }
     } 
   `

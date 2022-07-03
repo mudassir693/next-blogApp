@@ -15,7 +15,7 @@ import {gql,request} from 'graphql-request'
 
 function ProfilePosts({articles}) {
   // console.log(test)
-  const {modal} = useContext(context)
+  const {login,modal} = useContext(context)
   const [blogList,setBlogList] = useState([])
   const [toggler,setToggler] = useState(true)
   
@@ -26,8 +26,8 @@ function ProfilePosts({articles}) {
 
   const getArticles = async()=>{
     const query = gql`
-    query {
-      getAllBlogs {
+    query ($id:String){
+      getLikedBlog(id:$id) {
         _id
         TitleImage
         Title
@@ -36,12 +36,13 @@ function ProfilePosts({articles}) {
         FinalLine
         Views,
         Likes
+        PublishDate
       }
     } 
   `
   
-    const resp =await request('https://progress-regularly.herokuapp.com/graphql',query)
-    setBlogList(resp.getAllBlogs)
+    const resp =await request('https://progress-regularly.herokuapp.com/graphql',query,{id:login._id})
+    setBlogList(resp.getLikedBlog)
 
     console.log('get articles from useEffect: ',resp);
 
@@ -57,9 +58,13 @@ function ProfilePosts({articles}) {
             Liked Blogs
         </div>
         <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {blogList.map(eachArticle=>(
+        {blogList.length>0 && blogList?.map(eachArticle=>(
             <ArticleTile toggler={toggler} setToggler={setToggler} article={eachArticle} imgSrc={NodeTitleImage} />
             ))  
+          }
+          {blogList.length==0 && <div className="text-gray-400">
+            You Haven't like any post yet.
+          </div>
           }
           </div>
         {/* <div className="articleSection my-3 grid grid-cols-1 md:grid-cols-2 gap-8">

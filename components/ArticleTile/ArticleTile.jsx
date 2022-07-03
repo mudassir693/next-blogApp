@@ -26,11 +26,6 @@ function ArticleTile({imgSrc,article,toggler,setToggler}) {
           _id
           TitleImage
           Title
-          Introduction
-          TerminalCommands
-          Code
-          Peragraphs
-          FinalLine
         }
       }
       `
@@ -58,8 +53,8 @@ function ArticleTile({imgSrc,article,toggler,setToggler}) {
               {article.Title}
           </div>
           <div className="articleTimeStamp text-md text-gray-400 font-light">
-              {/* 2 jun, 2022 */}
-              {moment(article.createdAt).format("D MMM YYYY")} &nbsp; | &nbsp; {article.Views} views &nbsp; | &nbsp; {article.Likes} Likes
+              {/* {article.PublishDate} */}
+              {moment(article.PublishDate).format("D MMM YYYY")} &nbsp; | &nbsp; {article.Views} views &nbsp; | &nbsp; {article.Likes} Likes
           </div>
       </div>
     </div>
