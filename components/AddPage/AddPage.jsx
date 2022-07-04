@@ -239,6 +239,58 @@ function AddPage(prop) {
       
     //   }
 
+    const handleCOntentImage = async(e) => {
+        console.log('yess')
+        const image = e.target.files[0]
+        setImage(image)
+        console.log(e.target.files[0]);
+        // handleFireBaseUpload()
+
+        console.log('start of upload')
+        // async magic goes here...
+  
+        const uploadTask = db.ref(`/images/${e.target.files[0].name}`).put(e.target.files[0])
+
+        // const imageResp =  await db.collection("images").doc(`images-${e.target.files[0].name}`).set(JSON.parse(JSON.stringify({id:image.name,file:image})));
+
+        // console.log('checkmark: ',imageResp);
+
+        uploadTask.on('state_changed', 
+            (snapShot) => {
+            //takes a snap shot of the process as it is happening
+            console.log('snapshot: ',snapShot)
+            }, (err) => {
+            //catches the errors
+            console.log('error: ',err.message_)
+            }, () => {
+            // gets the functions from storage refences the image storage in firebase by the children
+            // gets the download url then sets the image from firebase as the value for the imgUrl key:
+            db.ref('images').child(image.name).getDownloadURL()
+            .then(async fireBaseUrl => {
+                console.log('here is url: ', fireBaseUrl);
+
+                const mutation = gql`
+                mutation($img: String){
+                    addBlock(Type:"Image",Position:"",Content:$img){
+                        _id
+                        Type
+                        Position
+                        Content
+                    }
+                }
+            `
+    
+            const resp = await request('https://progress-regularly.herokuapp.com/graphql',mutation,{img:fireBaseUrl})
+    
+            console.log('here i found it: ',resp.addBlock);
+    
+            setBodyArrayId([...bodyArrayId,resp.addBlock._id])
+            setBodyIds([...bodyIds,resp.addBlock._id])
+            setBodyArray([...bodyArray,resp.addBlock])
+       })
+    })
+    }
+
       const handleImageAsFile = async(e) => {
         console.log('yess')
         const image = e.target.files[0]
@@ -348,6 +400,12 @@ function AddPage(prop) {
                 </div>
             </div>}
 
+            
+            {block?.Type=="Image" && <div className="imageContainerAddForm my-3 h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto">
+                <Image className='rounded-lg' src={block?.Content} alt='Banner Image'  objectFit="cover" layout='fill'/>
+            </div>}
+            
+
             </div>
 
                     // <div className="w-[90%] md:w-[100%] mx-auto rounded-lg my-3 relative">
@@ -356,6 +414,13 @@ function AddPage(prop) {
                     // </div>
 
                 ))}
+
+                <input 
+                    type="file"
+                    onChange={handleCOntentImage}
+                />
+
+
 
                 <div className="my-5 flex flex-col justify-end items-end">
                     <div className="w-[100%] eachFeildContainer">

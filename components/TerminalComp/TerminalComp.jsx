@@ -3,6 +3,7 @@ import React,{useEffect,useState} from 'react'
 import ReactTerminalCommand from 'react-terminal-command'
 import { CopyBlock, dracula } from "react-code-blocks";
 import {BsTrashFill} from 'react-icons/bs'
+import Image from 'next/image'
 
 function TerminalComp({id, edit, bodyIds,setBodyIds,toggler,setToggler}) {
     const [block,setBlock] = useState({Type:'',Position:'',Content:''})
@@ -77,6 +78,10 @@ function TerminalComp({id, edit, bodyIds,setBodyIds,toggler,setToggler}) {
                         codeBlock
                     />
                 </div>
+                {edit && <div className="absolute bottom-1 right-1"> <BsTrashFill onClick={()=>deleteObj(id)} className="cursor-pointer text-red-400" /> </div>}
+            </div>}
+            {block?.Type=="Image" && <div className="imageContainerAddForm my-3 h-[10rem] lg:h-[20rem] w-[90%] md:w-[80%] relative mx-auto">
+                <Image className='rounded-lg' src={block?.Content} alt='Banner Image'  objectFit="cover" layout='fill'/>
                 {edit && <div className="absolute bottom-1 right-1"> <BsTrashFill onClick={()=>deleteObj(id)} className="cursor-pointer text-red-400" /> </div>}
             </div>}
 
